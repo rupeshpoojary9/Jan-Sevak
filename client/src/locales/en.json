@@ -1,0 +1,40 @@
+{
+    "navbar": {
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "map": "Live Map",
+        "leaderboard": "Leaderboard",
+        "login": "Login",
+        "logout": "Logout",
+        "language": "Language"
+    },
+    "home": {
+        "hero_title": "Fix Your City with AI",
+        "hero_subtitle": "Report potholes, garbage, and civic issues in seconds. We use AI to verify and escalate directly to authorities.",
+        "report_button": "Report an Issue",
+        "how_it_works": "How It Works",
+        "step_1": "Snap a Photo",
+        "step_2": "AI Verifies Urgency",
+        "step_3": "Sent to Ward Officer"
+    },
+    "complaint_form": {
+        "title": "Report an Issue",
+        "upload_image": "Upload Image",
+        "category": "Category",
+        "description": "Description",
+        "location": "Location",
+        "submit": "Submit Complaint",
+        "analyzing": "Analyzing with AI..."
+    },
+    "dashboard": {
+        "my_complaints": "My Complaints",
+        "status": "Status",
+        "urgency": "Urgency Score",
+        "date": "Date"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "Something went wrong",
+        "success": "Success!"
+    }
+}

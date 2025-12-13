@@ -1,0 +1,218 @@
+[
+    {
+        "model": "complaints.ward",
+        "pk": 1,
+        "fields": {
+            "name": "A",
+            "full_name": "Colaba",
+            "officer_email": "ac.a@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 2,
+        "fields": {
+            "name": "B",
+            "full_name": "Sandhurst Road",
+            "officer_email": "ac.b@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 3,
+        "fields": {
+            "name": "C",
+            "full_name": "Marine Lines",
+            "officer_email": "ac.c@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 4,
+        "fields": {
+            "name": "D",
+            "full_name": "Grant Road",
+            "officer_email": "ac.d@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 5,
+        "fields": {
+            "name": "E",
+            "full_name": "Byculla",
+            "officer_email": "ac.e@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 6,
+        "fields": {
+            "name": "F/South",
+            "full_name": "Parel",
+            "officer_email": "ac.fs@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 7,
+        "fields": {
+            "name": "F/North",
+            "full_name": "Matunga",
+            "officer_email": "ac.fn@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 8,
+        "fields": {
+            "name": "G/South",
+            "full_name": "Elphinstone",
+            "officer_email": "ac.gs@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 9,
+        "fields": {
+            "name": "G/North",
+            "full_name": "Dadar",
+            "officer_email": "ac.gn@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 10,
+        "fields": {
+            "name": "H/East",
+            "full_name": "Santacruz East",
+            "officer_email": "ac.he@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 11,
+        "fields": {
+            "name": "H/West",
+            "full_name": "Bandra West",
+            "officer_email": "ac.hw@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 12,
+        "fields": {
+            "name": "K/East",
+            "full_name": "Andheri East",
+            "officer_email": "ac.ke@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 13,
+        "fields": {
+            "name": "K/West",
+            "full_name": "Andheri West",
+            "officer_email": "ac.kw@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 14,
+        "fields": {
+            "name": "P/South",
+            "full_name": "Goregaon",
+            "officer_email": "ac.ps@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 15,
+        "fields": {
+            "name": "P/North",
+            "full_name": "Malad",
+            "officer_email": "ac.pn@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 16,
+        "fields": {
+            "name": "R/South",
+            "full_name": "Kandivali",
+            "officer_email": "ac.rs@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 17,
+        "fields": {
+            "name": "R/North",
+            "full_name": "Dahisar",
+            "officer_email": "ac.rn@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 18,
+        "fields": {
+            "name": "R/Central",
+            "full_name": "Borivali",
+            "officer_email": "ac.rc@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 19,
+        "fields": {
+            "name": "L",
+            "full_name": "Kurla",
+            "officer_email": "ac.l@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 20,
+        "fields": {
+            "name": "M/East",
+            "full_name": "Govandi",
+            "officer_email": "ac.me@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 21,
+        "fields": {
+            "name": "M/West",
+            "full_name": "Chembur",
+            "officer_email": "ac.mw@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 22,
+        "fields": {
+            "name": "N",
+            "full_name": "Ghatkopar",
+            "officer_email": "ac.n@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 23,
+        "fields": {
+            "name": "S",
+            "full_name": "Bhandup",
+            "officer_email": "ac.s@mcgm.gov.in"
+        }
+    },
+    {
+        "model": "complaints.ward",
+        "pk": 24,
+        "fields": {
+            "name": "T",
+            "full_name": "Mulund",
+            "officer_email": "ac.t@mcgm.gov.in"
+        }
+    }
+]

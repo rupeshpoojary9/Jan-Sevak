@@ -1,0 +1,15 @@
+Django>=5.0
+djangorestframework
+django-cors-headers
+dj-rest-auth
+django-allauth
+django-filter
+google-generativeai
+pillow
+python-dotenv
+django-axes
+# Production
+gunicorn
+whitenoise
+dj-database-url
+psycopg2-binary
