@@ -37,11 +37,10 @@ else
     echo "✅ Docker already installed."
 fi
 
-# 3. Clone Repository (User needs to do this manually or provide repo URL)
-PROJECT_DIR="/home/ubuntu/jan_sevak"
-if [ ! -d "$PROJECT_DIR" ]; then
-    echo "⚠️  Project directory $PROJECT_DIR not found."
-    echo "    Please clone your repo first: git clone https://github.com/rupeshpoojary9/Jan-Sevak.git $PROJECT_DIR"
+# 3. Verify Project Directory
+if [ ! -f "docker-compose.prod.yml" ]; then
+    echo "❌ docker-compose.prod.yml not found!"
+    echo "   Please run this script from the root of the 'Jan-Sevak' repository."
     exit 1
 fi
 
@@ -57,7 +56,6 @@ fi
 
 # 5. Deploy
 echo "🚀 Deploying with Docker Compose..."
-cd $PROJECT_DIR
 
 # Check for .env
 if [ ! -f .env ]; then
