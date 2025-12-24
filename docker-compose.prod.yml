@@ -1,16 +1,28 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-jan_sevak}
+      - POSTGRES_USER=${POSTGRES_USER:-jan_sevak_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-jan_sevak_password}
+    restart: always
+
   backend:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    command: gunicorn --bind 0.0.0.0:8000 jan_sevak.wsgi:application
+    command: gunicorn --bind 0.0.0.0:8000 --timeout 120 jan_sevak.wsgi:application
     volumes:
       - ./media:/app/media
       - ./staticfiles:/app/staticfiles
     env_file:
       - .env
+    depends_on:
+      - db
     restart: always
 
   frontend:
@@ -22,3 +34,6 @@ services:
     depends_on:
       - backend
     restart: always
+
+volumes:
+  postgres_data:
