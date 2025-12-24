@@ -3,10 +3,12 @@ import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import ComplaintCard from '../components/ComplaintCard';
 import { useTranslation } from 'react-i18next';
+import { useComplaint } from '../context/ComplaintContext';
 
 const DashboardPage = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
+    const { complaintUpdateTrigger } = useComplaint();
     const [myComplaints, setMyComplaints] = useState([]);
     const [stats, setStats] = useState({ total: 0, resolved: 0, pending: 0 });
     const [loading, setLoading] = useState(true);
@@ -15,11 +17,15 @@ const DashboardPage = () => {
         const fetchMyComplaints = async () => {
             try {
                 const response = await axios.get('/api/complaints/my_complaints/');
-                const data = Array.isArray(response.data) ? response.data : [];
-                if (!Array.isArray(response.data)) {
-                    console.warn('Expected array from /api/complaints/my_complaints/ but got:', response.data);
+                // Handle pagination (Django Rest Framework returns { results: [...] } for paginated responses)
+                const data = response.data.results ? response.data.results : (Array.isArray(response.data) ? response.data : []);
+
+                if (!Array.isArray(data)) {
+                    console.warn('Expected array of complaints but got:', response.data);
+                    setMyComplaints([]);
+                } else {
+                    setMyComplaints(data);
                 }
-                setMyComplaints(data);
 
                 // Calculate stats
                 const total = data.length;
@@ -36,7 +42,7 @@ const DashboardPage = () => {
         if (user) {
             fetchMyComplaints();
         }
-    }, [user]);
+    }, [user, complaintUpdateTrigger]);
 
     const handleDelete = (deletedId) => {
         setMyComplaints(prev => prev.filter(c => c.id !== deletedId));

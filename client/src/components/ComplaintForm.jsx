@@ -10,15 +10,17 @@ const ComplaintForm = ({ onSuccess }) => {
         description: '',
         category: 'OTHERS',
         ward: '',
-        image: null,
+        images: [], // Changed from single image to array
         location_address: '',
-        is_anonymous: false
+        is_anonymous: false,
+        cc_reporter: true
     });
     const [loading, setLoading] = useState(false);
     const [analyzing, setAnalyzing] = useState(false);
     const [location, setLocation] = useState(null);
     const [locationStatus, setLocationStatus] = useState('idle'); // idle, loading, success, error
-    const [preview, setPreview] = useState(null);
+    const [preview, setPreview] = useState([]); // Changed to array
+    const [error, setError] = useState(null);
     const fileInputRef = useRef(null);
 
     // Fetch Wards on mount
@@ -34,13 +36,23 @@ const ComplaintForm = ({ onSuccess }) => {
             ...prev,
             [name]: type === 'checkbox' ? checked : value
         }));
+        // Clear error when user starts typing
+        if (error) setError(null);
     };
 
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFormData(prev => ({ ...prev, image: file }));
-            setPreview(URL.createObjectURL(file));
+        const files = Array.from(e.target.files);
+        if (files.length > 3) {
+            alert("You can only upload a maximum of 3 images.");
+            return;
+        }
+
+        if (files.length > 0) {
+            setFormData(prev => ({ ...prev, images: files }));
+
+            // Create previews
+            const newPreviews = files.map(file => URL.createObjectURL(file));
+            setPreview(newPreviews);
         }
     };
 
@@ -77,6 +89,7 @@ const ComplaintForm = ({ onSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(null);
 
         // 1. Validation: Title Length
         if (formData.title.length < 10) {
@@ -90,24 +103,24 @@ const ComplaintForm = ({ onSuccess }) => {
             return;
         }
 
-        // TEST MODE: Allow submission without GPS (Random Mumbai Location)
-        let finalLocation = location;
-        if (!finalLocation) {
-            // Generate random coordinates around Mumbai
-            const baseLat = 19.0760;
-            const baseLng = 72.8777;
-            const randomLat = baseLat + (Math.random() - 0.5) * 0.1; // +/- 0.05 degrees
-            const randomLng = baseLng + (Math.random() - 0.5) * 0.1;
-
-            finalLocation = { latitude: randomLat, longitude: randomLng };
-
-            alert("⚠️ TEST MODE: No GPS detected. Assigning a RANDOM location in Mumbai for testing purposes.");
+        // Ensure Location is set
+        if (!location) {
+            alert("Please tag your location using the 'Get GPS Location' button.");
+            return;
         }
+
+        let finalLocation = location;
 
         setLoading(true);
         setAnalyzing(true);
 
         // Create FormData object for file upload
+        if (formData.images.length === 0) {
+            setError("Please upload at least one photo of the issue.");
+            setLoading(false);
+            return;
+        }
+
         const data = new FormData();
         data.append('title', formData.title);
         data.append('description', formData.description);
@@ -117,9 +130,12 @@ const ComplaintForm = ({ onSuccess }) => {
         data.append('longitude', finalLocation.longitude);
         data.append('location_address', formData.location_address);
         data.append('is_anonymous', formData.is_anonymous);
+        data.append('cc_reporter', formData.cc_reporter);
 
-        if (formData.image) {
-            data.append('image', formData.image);
+        if (formData.images && formData.images.length > 0) {
+            formData.images.forEach((file) => {
+                data.append('images', file);
+            });
         }
 
         try {
@@ -132,9 +148,9 @@ const ComplaintForm = ({ onSuccess }) => {
             // Reset form
             setFormData({
                 title: '', description: '', category: 'OTHERS', ward: '',
-                image: null, location_address: '', is_anonymous: false
+                images: [], location_address: '', is_anonymous: false, cc_reporter: true
             });
-            setPreview(null);
+            setPreview([]);
             setLocation(null);
             setLocationStatus('idle');
         } catch (err) {
@@ -156,7 +172,8 @@ const ComplaintForm = ({ onSuccess }) => {
                 errorMessage = err.message;
             }
 
-            alert("❌ Submission Failed:\n" + errorMessage);
+            setError(errorMessage);
+            // alert("❌ Submission Failed:\n" + errorMessage); // Optional: Keep alert or remove
         } finally {
             setLoading(false);
             setAnalyzing(false);
@@ -166,6 +183,24 @@ const ComplaintForm = ({ onSuccess }) => {
     return (
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
             <h2 className="text-2xl font-heading font-bold mb-6 text-gray-900 border-b border-gray-100 pb-4">{t('complaint_form.title')}</h2>
+
+            {error && (
+                <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-lg">
+                    <div className="flex">
+                        <div className="flex-shrink-0">
+                            <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                            </svg>
+                        </div>
+                        <div className="ml-3">
+                            <p className="text-sm text-red-700 font-medium">
+                                {error}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
 
                 {/* Section 1: Issue Details */}
@@ -174,21 +209,32 @@ const ComplaintForm = ({ onSuccess }) => {
 
                     {/* Image Upload */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('complaint_form.upload_image')}</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('complaint_form.upload_image')} (Max 3)</label>
                         <div className="flex items-center justify-center w-full">
                             <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
-                                {preview ? (
-                                    <img src={preview} alt="Preview" className="w-full h-full object-contain rounded-lg" />
+                                {preview && preview.length > 0 ? (
+                                    <div className="grid grid-cols-3 gap-2 p-2 w-full h-full overflow-y-auto">
+                                        {preview.map((src, index) => (
+                                            <img key={index} src={src} alt={`Preview ${index}`} className="w-full h-24 object-cover rounded-lg" />
+                                        ))}
+                                    </div>
                                 ) : (
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                         <svg className="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                         </svg>
                                         <p className="mb-2 text-sm text-gray-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                        <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                                        <p className="text-xs text-gray-500">SVG, PNG, JPG or GIF (Max 3 images)</p>
                                     </div>
                                 )}
-                                <input ref={fileInputRef} type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    className="hidden"
+                                    onChange={handleImageChange}
+                                    accept="image/*"
+                                    multiple
+                                />
                             </label>
                         </div>
                     </div>
@@ -305,7 +351,7 @@ const ComplaintForm = ({ onSuccess }) => {
                                 )}
                             </button>
                             <p className="text-xs text-center text-gray-400">
-                                (Test Mode: You can skip this to use a random location)
+                                (GPS is required to verify the issue location)
                             </p>
                         </div>
                         {locationStatus === 'error' && (
@@ -324,6 +370,21 @@ const ComplaintForm = ({ onSuccess }) => {
                             placeholder="Landmark or Address"
                         />
                     </div>
+                </div>
+
+                {/* CC Reporter Checkbox */}
+                <div className="flex items-center">
+                    <input
+                        id="cc_reporter"
+                        name="cc_reporter"
+                        type="checkbox"
+                        checked={formData.cc_reporter}
+                        onChange={handleChange}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="cc_reporter" className="ml-2 block text-sm text-gray-900">
+                        Include me in CC (Receive a copy of the official email)
+                    </label>
                 </div>
 
                 {/* Submit Button */}
@@ -347,6 +408,11 @@ const ComplaintForm = ({ onSuccess }) => {
                         t('complaint_form.submit')
                     )}
                 </button>
+                {error && (
+                    <p className="text-center text-red-600 text-sm mt-2 font-medium animate-pulse">
+                        ⚠️ Submission Failed. Check error above.
+                    </p>
+                )}
             </form>
         </div>
     );

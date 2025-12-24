@@ -98,17 +98,67 @@ const ComplaintCard = ({ complaint, onDelete }) => {
         return `${Math.floor(diffInSeconds / 86400)}d ago`;
     };
 
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    // Combine legacy image and new multiple images
+    const images = complaint.uploaded_images && complaint.uploaded_images.length > 0
+        ? complaint.uploaded_images.map(img => img.image)
+        : (complaint.image ? [complaint.image] : []);
+
+    const nextImage = (e) => {
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    };
+
+    const prevImage = (e) => {
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    };
+
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden card-hover group flex flex-col h-full">
 
             {/* Image Section */}
-            {complaint.image && (
-                <div className="h-56 overflow-hidden relative">
+            {images.length > 0 && (
+                <div className="h-56 overflow-hidden relative group/image">
                     <img
-                        src={complaint.image}
+                        src={images[currentImageIndex]}
                         alt={complaint.title}
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                     />
+
+                    {/* Carousel Controls */}
+                    {images.length > 1 && (
+                        <>
+                            <button
+                                onClick={prevImage}
+                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-1 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                            <button
+                                onClick={nextImage}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-1 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+
+                            {/* Dots Indicator */}
+                            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-1">
+                                {images.map((_, idx) => (
+                                    <div
+                                        key={idx}
+                                        className={`h-1.5 w-1.5 rounded-full ${idx === currentImageIndex ? 'bg-white' : 'bg-white/50'}`}
+                                    />
+                                ))}
+                            </div>
+                        </>
+                    )}
+
                     <div className="absolute top-3 right-3 flex space-x-2">
                         <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md ${getUrgencyColor(complaint.urgency_score)}`}>
                             Urgency {complaint.urgency_score}/10
@@ -126,7 +176,14 @@ const ComplaintCard = ({ complaint, onDelete }) => {
                         </svg>
                         <span>{complaint.ward_name}</span>
                     </div>
-                    {getStatusBadge(complaint.status)}
+                    <div className="flex items-center gap-2">
+                        {complaint.urgency_score > 0 && (
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${getUrgencyColor(complaint.urgency_score)}`}>
+                                Urgency {complaint.urgency_score}/10
+                            </span>
+                        )}
+                        {getStatusBadge(complaint.status)}
+                    </div>
                 </div>
 
                 <h3 className="text-xl font-heading font-bold text-gray-900 mb-2 leading-tight">{complaint.title}</h3>
@@ -172,6 +229,21 @@ const ComplaintCard = ({ complaint, onDelete }) => {
                             {verifications}
                         </span>
                     </button>
+
+                    {/* Verification Progress Text */}
+                    <div className="text-xs text-gray-500 ml-2 flex-1">
+                        {complaint.urgency_score >= 8 ? (
+                            <span className="text-red-600 font-semibold">Urgent! Official notified.</span>
+                        ) : (
+                            <span>
+                                {verifications >= 3 ? (
+                                    <span className="text-green-600 font-semibold">Official notified.</span>
+                                ) : (
+                                    <span>{verifications}/3 to notify Official</span>
+                                )}
+                            </span>
+                        )}
+                    </div>
 
                     <button
                         onClick={handleShare}

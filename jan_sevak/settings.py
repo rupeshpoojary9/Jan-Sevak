@@ -29,9 +29,9 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = "django-insecure-d=zwwn97@6g*z=%+$lqe+rz28a10-4uxfq$q_l@j%7-sbf%ju2"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['testserver', 'localhost', '127.0.0.1', '.ngrok-free.app', '*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app']
 
@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "dj_rest_auth.registration",
     "django_filters",
-    "complaints",
+    "complaints.apps.ComplaintsConfig",
     "axes", # Brute Force Protection
 ]
 
@@ -68,6 +68,15 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+}
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 # Axes Configuration
@@ -208,7 +217,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # SAFETY CATCH:
 # If this is set, ALL emails (to officials and citizens) will be redirected here.
 # This prevents accidental spamming of real officials during testing.
-EMAIL_OVERRIDE_ADDRESS = 'poojary.rupesh12@gmail.com' if DEBUG else None
+EMAIL_OVERRIDE_ADDRESS = os.getenv('EMAIL_OVERRIDE_ADDRESS')
 
 # Senior Officials for Escalation
 SENIOR_OFFICIALS = {

@@ -5,8 +5,10 @@
         "map": "Live Map",
         "leaderboard": "Leaderboard",
         "login": "Login",
+        "register": "Register",
         "logout": "Logout",
-        "language": "Language"
+        "language": "Language",
+        "report_issue": "Report Issue"
     },
     "home": {
         "hero_title": "Fix Your City with AI",
@@ -16,6 +18,23 @@
         "step_1": "Snap a Photo",
         "step_2": "AI Verifies Urgency",
         "step_3": "Sent to Ward Officer"
+    },
+    "landing": {
+        "hero_title": "Fix Your City with",
+        "hero_subtitle": "Empowering citizens to report issues, track progress, and build a better community together. AI-powered complaint resolution at your fingertips.",
+        "get_started": "Get Started",
+        "login": "Log In",
+        "features_title": "Faster Resolution",
+        "features_subtitle": "Everything you need to improve your neighborhood",
+        "features_desc": "Jan Sevak uses advanced AI to categorize complaints and route them to the right officials instantly.",
+        "snap_title": "Snap & Report",
+        "snap_desc": "Simply take a photo of the issue. Our AI automatically identifies if it's a pothole, garbage dump, or broken light.",
+        "geo_title": "Geo-Tagging",
+        "geo_desc": "Precise location tracking ensures officials know exactly where the problem is.",
+        "leaderboard_title": "Leaderboard",
+        "leaderboard_desc": "Earn points for every verified report. Compete with others to become the top Jan Sevak of your area.",
+        "impact_title": "Verified Impact",
+        "impact_desc": "Track the status of your complaints in real-time. Receive notifications when issues are resolved."
     },
     "complaint_form": {
         "title": "Report an Issue",
@@ -27,14 +46,31 @@
         "analyzing": "Analyzing with AI..."
     },
     "dashboard": {
+        "welcome": "Welcome",
+        "track_issues": "Track your reported issues and community impact.",
+        "total_reported": "Total Reported",
+        "resolved": "Resolved",
+        "pending": "Pending",
         "my_complaints": "My Complaints",
         "status": "Status",
         "urgency": "Urgency Score",
-        "date": "Date"
+        "date": "Date",
+        "no_complaints": "No complaints found. Start by reporting an issue!"
+    },
+    "leaderboard": {
+        "title": "Top Jan Sevaks",
+        "subtitle": "Celebrating the citizens making Mumbai better.",
+        "rank": "Rank",
+        "citizen": "Citizen",
+        "points": "Points",
+        "badges": "Badges",
+        "loading": "Loading Top Citizens...",
+        "you": "(You)"
     },
     "common": {
         "loading": "Loading...",
         "error": "Something went wrong",
-        "success": "Success!"
+        "success": "Success!",
+        "close": "Close"
     }
 }

@@ -56,6 +56,7 @@ class Complaint(models.Model):
     
     # Community
     verification_count = models.PositiveIntegerField(default=0)
+    cc_reporter = models.BooleanField(default=False, help_text="If true, reporter gets CC of the official email")
     
     # Resolution Workflow
     admin_token = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -89,3 +90,14 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} ({self.points} pts)"
+
+class ComplaintImage(models.Model):
+    """
+    Allows multiple images per complaint.
+    """
+    complaint = models.ForeignKey(Complaint, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='complaints/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image for {self.complaint.title}"

@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
 const RegisterPage = () => {
-    const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+    const [formData, setFormData] = useState({ username: '', email: '', password: '', confirm_password: '' });
     const [error, setError] = useState('');
     const { register } = useAuth();
     const navigate = useNavigate();
@@ -15,6 +15,12 @@ const RegisterPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (formData.password !== formData.confirm_password) {
+            setError("Passwords do not match");
+            return;
+        }
+
         const result = await register(formData.username, formData.email, formData.password);
         if (result.success) {
             navigate('/');
@@ -67,6 +73,17 @@ const RegisterPage = () => {
                             type="password"
                             name="password"
                             value={formData.password}
+                            onChange={handleChange}
+                            required
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <input
+                            type="password"
+                            name="confirm_password"
+                            value={formData.confirm_password}
                             onChange={handleChange}
                             required
                             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"

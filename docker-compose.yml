@@ -9,6 +9,8 @@ services:
       - POSTGRES_DB=jan_sevak
       - POSTGRES_USER=jan_sevak_user
       - POSTGRES_PASSWORD=jan_sevak_password
+    ports:
+      - "5432:5432"
     restart: always
 
   backend:

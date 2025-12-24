@@ -45,24 +45,59 @@ def revoke_points_verification(sender, instance, **kwargs):
 from django.core.mail import send_mail
 from django.conf import settings
 
-# 4. Send Email Notification to Ward Officer
-@receiver(post_save, sender=Complaint)
-def send_complaint_email(sender, instance, created, **kwargs):
-    if created and instance.ward and instance.ward.officer_email:
+# 4. Send Email Notification to Ward Officer (Triggered by Verification)
+@receiver(post_save, sender=Verification)
+def check_verification_threshold(sender, instance, created, **kwargs):
+    if created:
+        complaint = instance.complaint
+        # Count total verifications (including the implicit one from the reporter if we count that, 
+        # but usually reporter is separate. Let's count actual Verification objects).
+        # Note: In our logic, reporter doesn't get a Verification object automatically, 
+        # but for this requirement "community is verifying", we can say:
+        # Threshold = 2 (1 Reporter + 1 Community Member) OR just 2 Verification objects if reporter also verifies.
+        # Let's assume we need 1 *additional* verification from the community.
+        
+        # Check if email already sent to avoid duplicates
+        # In a real app, add a 'email_sent' boolean field to Complaint model.
+        # For now, we'll just check if count is EXACTLY 1 (meaning this is the first community verification).
+        # Wait, user said "community is verifying". 
+        # If reporter creates it, count is 0. 
+        # Community member 1 verifies -> Count 1.
+        # Let's trigger on Count == 1.
+        
+        verification_count = complaint.verifications.count()
+        
+        # Smart Threshold Logic
+        # High Urgency (8-10) -> Threshold 1 (Immediate)
+        # Normal (0-7) -> Threshold 3 (Community Verified)
+        
+        threshold = 3
+        if complaint.urgency_score >= 8:
+            threshold = 1
+            
+        if verification_count == threshold:
+            send_complaint_email(complaint)
+
+from django.core.mail import EmailMessage
+
+def send_complaint_email(instance):
+    if instance.ward and instance.ward.officer_email:
         # Generate Magic Link
-        # In production, use request.build_absolute_uri or settings.SITE_URL
         resolve_link = f"http://127.0.0.1:8000/api/resolve/{instance.id}/{instance.admin_token}/"
         
         subject = f"[URGENT] Formal Grievance: {instance.category} in Ward {instance.ward.name} - Ref #{instance.id}"
         message = f"""
-        FORMAL CITIZEN GRIEVANCE
+        FORMAL CITIZEN GRIEVANCE (Community Verified)
         Date: {instance.created_at.strftime('%Y-%m-%d')}
         Reference No: #{instance.id}
         Urgency Score: {instance.urgency_score}/10 (AI Assessed)
+        Community Verifications: {instance.verifications.count()}
 
         Dear Assistant Municipal Commissioner,
 
         This is to bring to your immediate attention a civic issue reported by a citizen in your jurisdiction, under Ward {instance.ward.name} ({instance.ward.full_name}).
+        
+        This issue has been verified by the community.
 
         ISSUE DETAILS:
         ------------------------------------------------
@@ -89,21 +124,34 @@ def send_complaint_email(sender, instance, created, **kwargs):
         Yours faithfully,
 
         Jan Sevak Platform
-        (System-generated report verified by AI)
+        (System-generated report verified by AI & Community)
         """
         
         try:
-            # FOR TESTING: Send to dummy email as requested
-            recipient_list = ["poojary.rupesh12@gmail.com"]
+            # Determine Recipient
+            recipient_email = instance.ward.officer_email
+            if settings.EMAIL_OVERRIDE_ADDRESS:
+                recipient_email = settings.EMAIL_OVERRIDE_ADDRESS
+                print(f"Redirecting email to override address: {recipient_email}")
+
+            recipient_list = [recipient_email]
+            cc_list = []
             
-            send_mail(
+            # Check for CC Reporter
+            if instance.cc_reporter and instance.reporter and instance.reporter.email:
+                cc_list.append(instance.reporter.email)
+                print(f"Adding reporter {instance.reporter.email} to CC list")
+            
+            email = EmailMessage(
                 subject,
                 message,
                 settings.EMAIL_HOST_USER,
                 recipient_list,
-                fail_silently=False,
+                cc=cc_list
             )
-            print(f"Email sent to {recipient_list[0]}")
+            email.send(fail_silently=False)
+            
+            print(f"Email sent to {recipient_list} with CC: {cc_list}")
         except Exception as e:
             print(f"Failed to send email: {e}")
 

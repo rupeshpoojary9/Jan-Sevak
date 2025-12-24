@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { useComplaint } from '../context/ComplaintContext';
 
 // Fix for default marker icon missing in Leaflet + Webpack/Vite
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -20,6 +21,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 const MapPage = () => {
     const [geoData, setGeoData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { complaintUpdateTrigger } = useComplaint();
 
     // Center on Mumbai (Dadar)
     const position = [19.0178, 72.8478];
@@ -36,7 +38,7 @@ const MapPage = () => {
             }
         };
         fetchGeoJSON();
-    }, []);
+    }, [complaintUpdateTrigger]);
 
     if (loading) return <div className="text-center py-20">Loading Map...</div>;
 
@@ -45,6 +47,22 @@ const MapPage = () => {
         [18.89, 72.75], // Southwest coordinates
         [19.30, 73.00]  // Northeast coordinates
     ];
+
+    // Helper to create colored pin icon
+    const createCustomIcon = (color) => {
+        const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" width="36" height="36" stroke="white" stroke-width="1.5">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+        `;
+        return L.divIcon({
+            className: 'custom-pin-icon',
+            html: svg,
+            iconSize: [36, 36],
+            iconAnchor: [18, 36], // Bottom center
+            popupAnchor: [0, -36]
+        });
+    };
 
     return (
         <div className="h-[calc(100vh-64px)] w-full">
@@ -65,8 +83,17 @@ const MapPage = () => {
                     const [lng, lat] = feature.geometry.coordinates;
                     const { title, category, status, urgency_score, ward_name } = feature.properties;
 
+                    // Determine Color based on Urgency
+                    let color = '#10B981'; // Green (Tailwind emerald-500)
+                    if (urgency_score >= 8) color = '#EF4444'; // Red (Tailwind red-500)
+                    else if (urgency_score >= 4) color = '#F59E0B'; // Orange (Tailwind amber-500)
+
                     return (
-                        <Marker key={feature.properties.id} position={[lat, lng]}>
+                        <Marker
+                            key={feature.properties.id}
+                            position={[lat, lng]}
+                            icon={createCustomIcon(color)}
+                        >
                             <Popup>
                                 <div className="p-1">
                                     <h3 className="font-bold text-sm">{title}</h3>
@@ -77,7 +104,7 @@ const MapPage = () => {
                                             {status}
                                         </span>
                                         {urgency_score > 0 && (
-                                            <span className="text-xs font-bold text-red-600">
+                                            <span className={`text-xs font-bold ${urgency_score >= 8 ? 'text-red-600' : 'text-orange-600'}`}>
                                                 Urgency: {urgency_score}/10
                                             </span>
                                         )}

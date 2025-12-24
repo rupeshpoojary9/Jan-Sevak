@@ -83,7 +83,8 @@ class ComplaintViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def geojson(self, request):
         # Fetch all complaints (optimize query)
-        complaints = self.queryset
+        # Fetch all complaints (optimize query)
+        complaints = Complaint.objects.select_related('ward').all()
         
         features = []
         for c in complaints:

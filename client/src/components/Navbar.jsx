@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { useComplaint } from '../context/ComplaintContext';
 
-const Navbar = ({ showForm, setShowForm }) => {
+const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
+    const { openForm } = useComplaint();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleLogout = async () => {
@@ -32,7 +34,7 @@ const Navbar = ({ showForm, setShowForm }) => {
     };
 
     return (
-        <nav className="bg-white shadow-sm sticky top-0 z-50">
+        <nav className="bg-white shadow-sm sticky top-0 z-[100]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     {/* Logo & Brand */}
@@ -62,6 +64,17 @@ const Navbar = ({ showForm, setShowForm }) => {
                         <Link to="/" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                             {t('navbar.home')}
                         </Link>
+
+                        {/* Report Issue Button (Global) */}
+                        <button
+                            onClick={openForm}
+                            className="bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-sm hover:shadow-md flex items-center gap-2"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            {t('navbar.report_issue', 'Report Issue')}
+                        </button>
 
                         {user ? (
                             <>
@@ -142,6 +155,18 @@ const Navbar = ({ showForm, setShowForm }) => {
                         >
                             {t('navbar.home')}
                         </Link>
+
+                        {/* Mobile Report Issue Button */}
+                        <button
+                            onClick={() => {
+                                openForm();
+                                setIsMenuOpen(false);
+                            }}
+                            className="w-full text-left block px-3 py-2 rounded-md text-base font-bold text-red-600 bg-red-50 hover:bg-red-100"
+                        >
+                            {t('navbar.report_issue', 'Report Issue')}
+                        </button>
+
                         {user ? (
                             <>
                                 <Link

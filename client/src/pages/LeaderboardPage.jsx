@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const LeaderboardPage = () => {
     const { user } = useAuth();
+    const { t } = useTranslation();
     const [leaders, setLeaders] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -22,13 +24,13 @@ const LeaderboardPage = () => {
         }
     };
 
-    if (loading) return <div className="text-center py-20">Loading Top Citizens...</div>;
+    if (loading) return <div className="text-center py-20">{t('leaderboard.loading')}</div>;
 
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="text-center mb-10">
-                <h1 className="text-3xl font-bold text-gray-900">🏆 Top Jan Sevaks</h1>
-                <p className="mt-2 text-gray-600">Celebrating the citizens making Mumbai better.</p>
+                <h1 className="text-3xl font-bold text-gray-900">🏆 {t('leaderboard.title')}</h1>
+                <p className="mt-2 text-gray-600">{t('leaderboard.subtitle')}</p>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -37,16 +39,16 @@ const LeaderboardPage = () => {
                         <thead className="bg-gray-50">
                             <tr>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Rank
+                                    {t('leaderboard.rank')}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Citizen
+                                    {t('leaderboard.citizen')}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Points
+                                    {t('leaderboard.points')}
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Badges
+                                    {t('leaderboard.badges')}
                                 </th>
                             </tr>
                         </thead>
@@ -55,9 +57,9 @@ const LeaderboardPage = () => {
                                 <tr key={index} className={user && user.username === leader.username ? "bg-blue-50" : ""}>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold ${index === 0 ? 'bg-yellow-100 text-yellow-800' :
-                                                index === 1 ? 'bg-gray-100 text-gray-800' :
-                                                    index === 2 ? 'bg-orange-100 text-orange-800' :
-                                                        'text-gray-500'
+                                            index === 1 ? 'bg-gray-100 text-gray-800' :
+                                                index === 2 ? 'bg-orange-100 text-orange-800' :
+                                                    'text-gray-500'
                                             }`}>
                                             {index + 1}
                                         </div>
@@ -66,7 +68,7 @@ const LeaderboardPage = () => {
                                         <div className="text-sm font-medium text-gray-900">
                                             {leader.username}
                                             {user && user.username === leader.username && (
-                                                <span className="ml-2 text-xs text-blue-600 font-bold">(You)</span>
+                                                <span className="ml-2 text-xs text-blue-600 font-bold">{t('leaderboard.you')}</span>
                                             )}
                                         </div>
                                     </td>

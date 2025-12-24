@@ -2,6 +2,7 @@ Django>=5.0
 djangorestframework
 django-cors-headers
 dj-rest-auth
+djangorestframework-simplejwt
 django-allauth
 django-filter
 google-generativeai
@@ -13,3 +14,4 @@ gunicorn
 whitenoise
 dj-database-url
 psycopg2-binary
+openai

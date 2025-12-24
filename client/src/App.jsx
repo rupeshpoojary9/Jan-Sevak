@@ -15,45 +15,51 @@ import Footer from './components/Footer';
 
 import Home from './pages/Home';
 
+import { ComplaintProvider } from './context/ComplaintContext';
+import ComplaintModal from './components/ComplaintModal';
+
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={
-            <div className="min-h-screen bg-gray-50 flex flex-col">
-              <Navbar />
-              <div className="flex-grow">
-                <DashboardPage />
+      <ComplaintProvider>
+        <Router>
+          <ComplaintModal />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/dashboard" element={
+              <div className="min-h-screen bg-gray-50 flex flex-col">
+                <Navbar />
+                <div className="flex-grow">
+                  <DashboardPage />
+                </div>
+                <Footer />
               </div>
-              <Footer />
-            </div>
-          } />
-          <Route path="/map" element={
-            <div className="h-screen bg-gray-50 flex flex-col">
-              <Navbar />
-              <div className="flex-grow relative">
-                <MapPage />
+            } />
+            <Route path="/map" element={
+              <div className="h-screen bg-gray-50 flex flex-col">
+                <Navbar />
+                <div className="flex-grow relative">
+                  <MapPage />
+                </div>
+                <Footer />
               </div>
-              <Footer />
-            </div>
-          } />
-          <Route path="/leaderboard" element={
-            <div className="min-h-screen bg-gray-50 flex flex-col">
-              <Navbar />
-              <div className="flex-grow">
-                <LeaderboardPage />
+            } />
+            <Route path="/leaderboard" element={
+              <div className="min-h-screen bg-gray-50 flex flex-col">
+                <Navbar />
+                <div className="flex-grow">
+                  <LeaderboardPage />
+                </div>
+                <Footer />
               </div>
-              <Footer />
-            </div>
-          } />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/privacy" element={<LegalPrivacy />} />
-          <Route path="/terms" element={<Terms />} />
-        </Routes>
-      </Router>
+            } />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/privacy" element={<LegalPrivacy />} />
+            <Route path="/terms" element={<Terms />} />
+          </Routes>
+        </Router>
+      </ComplaintProvider>
     </AuthProvider>
   );
 }
