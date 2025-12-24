@@ -5,14 +5,11 @@ import { useNavigate, Link } from 'react-router-dom';
 const LoginPage = () => {
     const [formData, setFormData] = useState({ username: '', password: '' });
     const [error, setError] = useState('');
-    const { login, user } = useAuth();
+    const { login, user, logout } = useAuth();
     const navigate = useNavigate();
 
-    React.useEffect(() => {
-        if (user) {
-            navigate('/dashboard');
-        }
-    }, [user, navigate]);
+    // Remove auto-redirect to give user control
+    // React.useEffect(() => { ... }, [user]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,11 +20,41 @@ const LoginPage = () => {
         setError('');
         const result = await login(formData.username, formData.password);
         if (result.success) {
-            navigate('/');
+            navigate('/dashboard');
         } else {
             setError(result.error);
         }
     };
+
+    if (user) {
+        return (
+            <div className="min-h-[80vh] flex items-center justify-center">
+                <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md border border-gray-100 text-center">
+                    <h2 className="text-2xl font-bold mb-4 text-gray-800">Welcome Back!</h2>
+                    <p className="text-gray-600 mb-6">
+                        You are already logged in as <span className="font-semibold">{user.username || 'User'}</span>.
+                    </p>
+                    <div className="space-y-3">
+                        <button
+                            onClick={() => navigate('/dashboard')}
+                            className="w-full py-2 px-4 rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                        >
+                            Go to Dashboard
+                        </button>
+                        <button
+                            onClick={() => {
+                                logout();
+                                navigate('/login');
+                            }}
+                            className="w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                        >
+                            Logout & Switch Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center">
