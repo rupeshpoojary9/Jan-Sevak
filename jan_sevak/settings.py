@@ -189,9 +189,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = [
-    BASE_DIR / 'client/dist', # React Build Root
-]
+STATICFILES_DIRS = []
+if (BASE_DIR / 'client/dist').exists():
+    STATICFILES_DIRS.append(BASE_DIR / 'client/dist')
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # WhiteNoise Configuration
