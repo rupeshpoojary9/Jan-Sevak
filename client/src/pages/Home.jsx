@@ -23,7 +23,7 @@ const Home = () => {
     // Always show Landing Page at root
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
-            <Navbar />
+            {user && <Navbar />}
             <main className="flex-grow">
                 <LandingPage />
             </main>
