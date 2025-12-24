@@ -3,7 +3,8 @@ import google.generativeai as genai
 from complaints.ai_service import analyze_complaint
 
 # Mock Django settings if needed, or just run standalone
-os.environ.setdefault("GEMINI_API_KEY", "AIzaSyBoFEljS8PPNMmR1-iygacsZDIAM4pkYy0")
+# Mock Django settings if needed, or just run standalone
+os.environ.setdefault("GEMINI_API_KEY", os.environ.get("GEMINI_API_KEY", ""))
 
 def test_profanity():
     description = "This is a test with the word asshole in it."
