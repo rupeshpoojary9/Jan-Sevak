@@ -15,4 +15,6 @@ whitenoise
 dj-database-url
 psycopg2-binary
 openai
-django-cloudinary-storage
+openai
+django-storages
+boto3
