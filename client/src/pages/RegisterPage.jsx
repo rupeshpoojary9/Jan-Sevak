@@ -23,7 +23,7 @@ const RegisterPage = () => {
 
         const result = await register(formData.username, formData.email, formData.password);
         if (result.success) {
-            navigate('/');
+            navigate('/dashboard');
         } else {
             // Handle object errors from Django (e.g. {username: ["Taken"]})
             const msg = typeof result.error === 'object'
