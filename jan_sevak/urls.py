@@ -18,7 +18,9 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# Catch-all for React Frontend (MUST BE LAST)
-urlpatterns += [
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
-]
+# Catch-all for React Frontend (ONLY IN DEBUG MODE if needed, but better to let Nginx handle it)
+# In production, Nginx serves the frontend, so Backend should 404 on unknown routes.
+if settings.DEBUG:
+    urlpatterns += [
+        # re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+    ]
