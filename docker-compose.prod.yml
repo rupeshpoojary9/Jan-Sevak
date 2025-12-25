@@ -6,9 +6,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-jan_sevak}
-      - POSTGRES_USER=${POSTGRES_USER:-jan_sevak_user}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-jan_sevak_password}
+      - POSTGRES_DB=jan_sevak
+      - POSTGRES_USER=jan_sevak_user
+      - POSTGRES_PASSWORD=jan_sevak_password
     restart: always
 
   backend:
