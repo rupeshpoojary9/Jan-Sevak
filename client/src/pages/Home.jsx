@@ -20,9 +20,18 @@ const Home = () => {
         setRefreshKey(prev => prev + 1);
     }, [complaintUpdateTrigger]);
 
-    // Always show Landing Page at root
+    // Redirect to Dashboard if logged in
+    useEffect(() => {
+        if (user) {
+            navigate('/dashboard');
+        }
+    }, [user, navigate]);
+
+    // Always show Landing Page at root (for guests)
+    // Logged in users will be redirected by useEffect
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
+            {/* Navbar hidden for guests on Landing Page */}
             {user && <Navbar />}
             <main className="flex-grow">
                 <LandingPage />
