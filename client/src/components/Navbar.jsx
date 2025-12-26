@@ -39,7 +39,7 @@ const Navbar = () => {
                 <div className="flex justify-between h-16">
                     {/* Logo & Brand */}
                     <div className="flex items-center">
-                        <Link to="/" className="flex-shrink-0 flex items-center gap-2">
+                        <Link to="/feed" className="flex-shrink-0 flex items-center gap-2">
                             <div className="bg-blue-600 text-white p-1.5 rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -61,7 +61,7 @@ const Navbar = () => {
                             {getLanguageLabel()}
                         </button>
 
-                        <Link to={user ? "/dashboard" : "/"} className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <Link to="/feed" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                             {t('navbar.home')}
                         </Link>
 
@@ -149,7 +149,7 @@ const Navbar = () => {
                             🌐 {getLanguageLabel()}
                         </button>
                         <Link
-                            to={user ? "/dashboard" : "/"}
+                            to="/feed"
                             className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
                             onClick={() => setIsMenuOpen(false)}
                         >

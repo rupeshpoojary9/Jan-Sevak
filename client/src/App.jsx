@@ -26,6 +26,7 @@ function App() {
           <ComplaintModal />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/feed" element={<Home />} />
             <Route path="/dashboard" element={
               <div className="min-h-screen bg-gray-50 flex flex-col">
                 <Navbar />
