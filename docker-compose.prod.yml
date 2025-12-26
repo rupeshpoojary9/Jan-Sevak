@@ -18,6 +18,8 @@ services:
     command: gunicorn --bind 0.0.0.0:8000 --timeout 120 jan_sevak.wsgi:application
     volumes:
       - ./media:/app/media
+      - certbot_www:/var/www/certbot
+      - certbot_conf:/etc/letsencrypt
     env_file:
       - .env
     depends_on:
@@ -30,9 +32,21 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - backend
+    volumes:
+      - certbot_www:/var/www/certbot
+      - certbot_conf:/etc/letsencrypt
     restart: always
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot_www:/var/www/certbot
+      - certbot_conf:/etc/letsencrypt
 
 volumes:
   postgres_data:
+  certbot_www:
+  certbot_conf:
