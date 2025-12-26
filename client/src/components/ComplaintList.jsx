@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 import ComplaintCard from './ComplaintCard';
 
-const ComplaintList = () => {
+const ComplaintList = ({ endpoint }) => {
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -29,7 +29,7 @@ const ComplaintList = () => {
         setLoading(true);
         try {
             // Build URL with params
-            let url = `/api/complaints/?page=${page}`;
+            let url = endpoint ? `${endpoint}?page=${page}` : `/api/complaints/?page=${page}`;
             if (debouncedSearch) {
                 url += `&search=${debouncedSearch}`;
             }

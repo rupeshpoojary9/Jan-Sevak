@@ -20,21 +20,29 @@ const Home = () => {
         setRefreshKey(prev => prev + 1);
     }, [complaintUpdateTrigger]);
 
-    // Redirect to Dashboard if logged in
-    useEffect(() => {
-        if (user) {
-            navigate('/dashboard');
-        }
-    }, [user, navigate]);
+    // If not authenticated, show Landing Page
+    if (!user) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex flex-col">
+                <Navbar />
+                <main className="flex-grow">
+                    <LandingPage />
+                </main>
+                <Footer />
+            </div>
+        );
+    }
 
-    // Always show Landing Page at root (for guests)
-    // Logged in users will be redirected by useEffect
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
-            {/* Navbar hidden for guests on Landing Page */}
-            {user && <Navbar />}
-            <main className="flex-grow">
-                <LandingPage />
+            <Navbar />
+
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+                <div className="mb-6">
+                    <h1 className="text-2xl font-bold text-gray-900">{t('navbar.home')}</h1>
+                </div>
+
+                <ComplaintList key={refreshKey} endpoint="/api/complaints/" />
             </main>
             <Footer />
         </div>

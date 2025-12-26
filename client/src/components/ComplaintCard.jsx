@@ -100,10 +100,14 @@ const ComplaintCard = ({ complaint, onDelete }) => {
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+    import { getMediaUrl } from '../utils/media';
+
+    // ... (inside component)
+
     // Combine legacy image and new multiple images
     const images = complaint.uploaded_images && complaint.uploaded_images.length > 0
-        ? complaint.uploaded_images.map(img => img.image)
-        : (complaint.image ? [complaint.image] : []);
+        ? complaint.uploaded_images.map(img => getMediaUrl(img.image))
+        : (complaint.image ? [getMediaUrl(complaint.image)] : []);
 
     const nextImage = (e) => {
         e.stopPropagation();
@@ -229,21 +233,6 @@ const ComplaintCard = ({ complaint, onDelete }) => {
                             {verifications}
                         </span>
                     </button>
-
-                    {/* Verification Progress Text */}
-                    <div className="text-xs text-gray-500 ml-2 flex-1">
-                        {complaint.urgency_score >= 8 ? (
-                            <span className="text-red-600 font-semibold">Urgent! Official notified.</span>
-                        ) : (
-                            <span>
-                                {verifications >= 3 ? (
-                                    <span className="text-green-600 font-semibold">Official notified.</span>
-                                ) : (
-                                    <span>{verifications}/3 to notify Official</span>
-                                )}
-                            </span>
-                        )}
-                    </div>
 
                     <button
                         onClick={handleShare}
