@@ -67,64 +67,36 @@ def check_verification_threshold(sender, instance, created, **kwargs):
         
         verification_count = complaint.verifications.count()
         
-        # Smart Threshold Logic
-        # High Urgency (8-10) -> Threshold 1 (Immediate)
-        # Normal (0-7) -> Threshold 3 (Community Verified)
-        
-        threshold = 3
-        if complaint.urgency_score >= 8:
-            threshold = 1
-            
-        if verification_count == threshold:
+        if verification_count == 1:
             send_complaint_email(complaint)
-
-from django.core.mail import EmailMessage
 
 def send_complaint_email(instance):
     if instance.ward and instance.ward.officer_email:
         # Generate Magic Link
         resolve_link = f"http://127.0.0.1:8000/api/resolve/{instance.id}/{instance.admin_token}/"
         
-        subject = f"[URGENT] Formal Grievance: {instance.category} in Ward {instance.ward.name} - Ref #{instance.id}"
+        subject = f"New Civic Complaint: {instance.category} in Ward {instance.ward.name} (#{instance.id})"
         message = f"""
-        FORMAL CITIZEN GRIEVANCE (Community Verified)
-        Date: {instance.created_at.strftime('%Y-%m-%d')}
-        Reference No: #{instance.id}
-        Urgency Score: {instance.urgency_score}/10 (AI Assessed)
-        Community Verifications: {instance.verifications.count()}
-
         Dear Assistant Municipal Commissioner,
 
-        This is to bring to your immediate attention a civic issue reported by a citizen in your jurisdiction, under Ward {instance.ward.name} ({instance.ward.full_name}).
-        
-        This issue has been verified by the community.
+        A new civic complaint has been reported and verified by the community in your jurisdiction.
 
-        ISSUE DETAILS:
+        DETAILS:
         ------------------------------------------------
-        Nature of Complaint: {instance.get_category_display()}
+        Reference No: #{instance.id}
+        Date: {instance.created_at.strftime('%Y-%m-%d')}
+        Category: {instance.get_category_display()}
+        Ward: {instance.ward.name} ({instance.ward.full_name})
         Location: {instance.location_address}
-        GPS Coordinates: {instance.latitude}, {instance.longitude}
         Description: {instance.description}
+        Urgency Score: {instance.urgency_score}/10
         ------------------------------------------------
 
-        LEGAL CONTEXT & OBLIGATION:
-        We respectfully remind you of the statutory duties under:
-        1. Section 61 of the Mumbai Municipal Corporation Act, 1888 (Maintenance of public streets/sanitation).
-        2. The Maharashtra Right to Public Services Act, 2015 (Time-bound service delivery).
-        3. Article 21 of the Constitution of India (Right to safe roads/environment).
-
-        ACTION REQUIRED:
-        Given the Urgency Score of {instance.urgency_score}/10, we request you to inspect and resolve this matter immediately.
-
-        Please update the status of this complaint by clicking the secure link below:
+        Please review and update the status of this complaint using the link below:
         {resolve_link}
 
-        Failure to address this grievance may result in automatic escalation to the Deputy Municipal Commissioner.
-
-        Yours faithfully,
-
+        Thank you,
         Jan Sevak Platform
-        (System-generated report verified by AI & Community)
         """
         
         try:
@@ -135,23 +107,15 @@ def send_complaint_email(instance):
                 print(f"Redirecting email to override address: {recipient_email}")
 
             recipient_list = [recipient_email]
-            cc_list = []
             
-            # Check for CC Reporter
-            if instance.cc_reporter and instance.reporter and instance.reporter.email:
-                cc_list.append(instance.reporter.email)
-                print(f"Adding reporter {instance.reporter.email} to CC list")
-            
-            email = EmailMessage(
+            send_mail(
                 subject,
                 message,
                 settings.EMAIL_HOST_USER,
                 recipient_list,
-                cc=cc_list
+                fail_silently=False,
             )
-            email.send(fail_silently=False)
-            
-            print(f"Email sent to {recipient_list} with CC: {cc_list}")
+            print(f"Email sent to {recipient_list[0]}")
         except Exception as e:
             print(f"Failed to send email: {e}")
 
@@ -182,15 +146,9 @@ def notify_citizen_resolution(sender, instance, created, **kwargs):
         """
         
         try:
-            # Determine Recipient
-            recipient_email = instance.reporter.email
-            
-            # CHECK FOR TEST MODE / OVERRIDE
-            if settings.EMAIL_OVERRIDE_ADDRESS:
-                recipient_email = settings.EMAIL_OVERRIDE_ADDRESS
-                print(f"Redirecting Resolution Email to override address: {recipient_email}")
-            
-            recipient_list = [recipient_email]
+            # FOR TESTING: Send to dummy email
+            recipient_list = ["poojary.rupesh12@gmail.com"]
+            # In production: recipient_list = [instance.reporter.email]
             
             send_mail(
                 subject,
@@ -199,6 +157,6 @@ def notify_citizen_resolution(sender, instance, created, **kwargs):
                 recipient_list,
                 fail_silently=False,
             )
-            print(f"Resolution Email sent to {recipient_list}")
+            print(f"Resolution Email sent to {recipient_list[0]}")
         except Exception as e:
             print(f"Failed to send resolution email: {e}")
