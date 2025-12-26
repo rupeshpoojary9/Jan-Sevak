@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { useComplaint } from '../context/ComplaintContext';
@@ -7,6 +7,7 @@ import { useComplaint } from '../context/ComplaintContext';
 const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const { t, i18n } = useTranslation();
     const { openForm } = useComplaint();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,6 +32,20 @@ const Navbar = () => {
         if (i18n.language === 'hi') return 'हिंदी';
         if (i18n.language === 'mr') return 'मराठी';
         return 'English';
+    };
+
+    const getLinkClass = (path) => {
+        const isActive = location.pathname === path;
+        return isActive
+            ? "text-blue-600 bg-blue-50 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            : "text-gray-600 hover:text-blue-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium transition-colors";
+    };
+
+    const getMobileLinkClass = (path) => {
+        const isActive = location.pathname === path;
+        return isActive
+            ? "block px-3 py-2 rounded-md text-base font-medium text-blue-600 bg-blue-50"
+            : "block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50";
     };
 
     return (
@@ -61,7 +76,7 @@ const Navbar = () => {
                             {getLanguageLabel()}
                         </button>
 
-                        <Link to="/feed" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        <Link to="/feed" className={getLinkClass('/feed')}>
                             {t('navbar.home')}
                         </Link>
 
@@ -78,13 +93,13 @@ const Navbar = () => {
 
                         {user ? (
                             <>
-                                <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                <Link to="/dashboard" className={getLinkClass('/dashboard')}>
                                     {t('navbar.dashboard')}
                                 </Link>
-                                <Link to="/map" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                <Link to="/map" className={getLinkClass('/map')}>
                                     {t('navbar.map')}
                                 </Link>
-                                <Link to="/leaderboard" className="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                <Link to="/leaderboard" className={getLinkClass('/leaderboard')}>
                                     {t('navbar.leaderboard')}
                                 </Link>
                                 <div className="ml-4 flex items-center gap-4">
@@ -150,7 +165,7 @@ const Navbar = () => {
                         </button>
                         <Link
                             to="/feed"
-                            className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                            className={getMobileLinkClass('/feed')}
                             onClick={() => setIsMenuOpen(false)}
                         >
                             {t('navbar.home')}
@@ -171,21 +186,21 @@ const Navbar = () => {
                             <>
                                 <Link
                                     to="/dashboard"
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                                    className={getMobileLinkClass('/dashboard')}
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     {t('navbar.dashboard')}
                                 </Link>
                                 <Link
                                     to="/map"
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                                    className={getMobileLinkClass('/map')}
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     {t('navbar.map')}
                                 </Link>
                                 <Link
                                     to="/leaderboard"
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                                    className={getMobileLinkClass('/leaderboard')}
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     {t('navbar.leaderboard')}
