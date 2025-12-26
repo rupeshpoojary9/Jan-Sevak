@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { useToast } from '../context/ToastContext';
 
 const ComplaintForm = ({ onSuccess }) => {
     const { t } = useTranslation();
+    const { showToast } = useToast();
     const [wards, setWards] = useState([]);
     const [formData, setFormData] = useState({
         title: '',
@@ -42,7 +44,7 @@ const ComplaintForm = ({ onSuccess }) => {
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
         if (files.length > 3) {
-            alert("You can only upload a maximum of 3 images.");
+            showToast("You can only upload a maximum of 3 images.", 'error');
             return;
         }
 
@@ -58,7 +60,7 @@ const ComplaintForm = ({ onSuccess }) => {
     const handleGetLocation = () => {
         if (!navigator.geolocation) {
             setLocationStatus('error');
-            alert('Geolocation is not supported by your browser');
+            showToast('Geolocation is not supported by your browser', 'error');
             return;
         }
 
@@ -69,6 +71,7 @@ const ComplaintForm = ({ onSuccess }) => {
                 const lng = position.coords.longitude;
                 setLocation({ latitude: lat, longitude: lng });
                 setLocationStatus('success');
+                showToast("Location tagged successfully!", 'success');
 
                 // Auto-fill address with coordinates if empty
                 if (!formData.location_address) {
@@ -81,7 +84,7 @@ const ComplaintForm = ({ onSuccess }) => {
             (error) => {
                 console.error("Error getting location:", error);
                 setLocationStatus('error');
-                alert('Unable to retrieve your location. Please enable location services.');
+                showToast('Unable to retrieve your location. Please enable location services.', 'error');
             }
         );
     };
@@ -92,19 +95,19 @@ const ComplaintForm = ({ onSuccess }) => {
 
         // 1. Validation: Title Length
         if (formData.title.length < 10) {
-            alert("Title is too short. Please provide at least 10 characters.");
+            showToast("Title is too short. Please provide at least 10 characters.", 'error');
             return;
         }
 
         // 2. Validation: Description Length
         if (formData.description.length < 50) {
-            alert("Description is too short. Please explain the issue in detail (at least 50 characters).");
+            showToast("Description is too short. Please explain the issue in detail (at least 50 characters).", 'error');
             return;
         }
 
         // 3. Validation: Location Required
         if (!location) {
-            alert("Please tag your location using the 'Get GPS Location' button.");
+            showToast("Please tag your location using the 'Get GPS Location' button.", 'error');
             return;
         }
 
@@ -134,7 +137,7 @@ const ComplaintForm = ({ onSuccess }) => {
             await axios.post('/api/complaints/', data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            alert("Complaint Verified & Submitted Successfully!");
+            showToast("Complaint Verified & Submitted Successfully!", 'success');
             if (onSuccess) onSuccess(); // Callback to refresh the list
 
             // Reset form
@@ -165,7 +168,7 @@ const ComplaintForm = ({ onSuccess }) => {
             }
 
             setError(errorMessage);
-            // alert("❌ Submission Failed:\n" + errorMessage); // Optional: Keep alert or remove
+            showToast("Submission Failed: " + errorMessage, 'error');
         } finally {
             setLoading(false);
             setAnalyzing(false);

@@ -3,11 +3,13 @@ import axios from 'axios';
 
 import { useAuth } from '../context/AuthContext';
 import { getMediaUrl } from '../utils/media';
+import { useToast } from '../context/ToastContext';
 
 // 1. PROPS: We receive 'complaint' data and an 'onVerify' function from the parent.
 // This makes the component reusable for ANY complaint.
 const ComplaintCard = ({ complaint, onDelete }) => {
     const { user } = useAuth();
+    const { showToast } = useToast();
     const [verifications, setVerifications] = useState(complaint.verification_count);
     const [isConfirmed, setIsConfirmed] = useState(complaint.user_confirmed);
     const [hasVerified, setHasVerified] = useState(complaint.is_verified || false); // Initialize from backend prop
@@ -33,13 +35,13 @@ const ComplaintCard = ({ complaint, onDelete }) => {
                 if (msg === 'You have already verified this issue.') {
                     setHasVerified(true);
                     setVerifications(prev => prev + 1); // Re-add because it WAS verified
-                    alert("You have already verified this issue.");
+                    showToast("You have already verified this issue.", 'info');
                 } else {
                     // Other 400 errors (like own complaint)
-                    alert(msg || "Failed to verify");
+                    showToast(msg || "Failed to verify", 'error');
                 }
             } else {
-                alert(err.response?.data?.message || "Failed to verify");
+                showToast(err.response?.data?.message || "Failed to verify", 'error');
             }
         }
     };
@@ -48,8 +50,9 @@ const ComplaintCard = ({ complaint, onDelete }) => {
         try {
             await axios.post(`/api/complaints/${complaint.id}/confirm_resolution/`);
             setIsConfirmed(true);
+            showToast("Resolution confirmed!", 'success');
         } catch (err) {
-            alert(err.response?.data?.error || "Failed to confirm");
+            showToast(err.response?.data?.error || "Failed to confirm", 'error');
         }
     };
 
@@ -76,7 +79,7 @@ const ComplaintCard = ({ complaint, onDelete }) => {
         } else {
             // Fallback to clipboard
             navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-            alert("Link copied to clipboard!");
+            showToast("Link copied to clipboard!", 'success');
         }
     };
 
