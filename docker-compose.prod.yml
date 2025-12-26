@@ -38,6 +38,7 @@ services:
     volumes:
       - certbot_www:/var/www/certbot
       - certbot_conf:/etc/letsencrypt
+      - ./media:/app/media
     restart: always
 
   certbot:
