@@ -4,6 +4,7 @@ import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useComplaint } from '../context/ComplaintContext';
+import { getMediaUrl } from '../utils/media';
 
 // Fix for default marker icon missing in Leaflet + Webpack/Vite
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -95,6 +96,13 @@ const MapPage = () => {
                         >
                             <Popup>
                                 <div className="p-1">
+                                    {feature.properties.image && (
+                                        <img
+                                            src={getMediaUrl(feature.properties.image)}
+                                            alt={title}
+                                            className="w-full h-32 object-cover rounded-md mt-2 mb-2"
+                                        />
+                                    )}
                                     <h3 className="font-bold text-sm">{title}</h3>
                                     <p className="text-xs text-gray-600">{category} • {ward_name}</p>
                                     <div className="mt-1 flex items-center gap-2">

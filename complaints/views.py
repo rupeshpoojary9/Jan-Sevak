@@ -104,7 +104,8 @@ class ComplaintViewSet(viewsets.ModelViewSet):
                     "category": c.category,
                     "status": c.status,
                     "urgency_score": c.urgency_score,
-                    "ward_name": c.ward.name if c.ward else "Unknown"
+                    "ward_name": c.ward.name if c.ward else "Unknown",
+                    "image": c.image.url if c.image else None
                 }
             })
         
