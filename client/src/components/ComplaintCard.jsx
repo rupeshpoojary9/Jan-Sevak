@@ -28,9 +28,16 @@ const ComplaintCard = ({ complaint, onDelete }) => {
 
             // If already verified, backend might return 400
             if (err.response && err.response.status === 400) {
-                setHasVerified(true);
-                setVerifications(prev => prev + 1); // Re-add because it WAS verified
-                alert("You have already verified this issue.");
+                const msg = err.response.data?.message;
+
+                if (msg === 'You have already verified this issue.') {
+                    setHasVerified(true);
+                    setVerifications(prev => prev + 1); // Re-add because it WAS verified
+                    alert("You have already verified this issue.");
+                } else {
+                    // Other 400 errors (like own complaint)
+                    alert(msg || "Failed to verify");
+                }
             } else {
                 alert(err.response?.data?.message || "Failed to verify");
             }
