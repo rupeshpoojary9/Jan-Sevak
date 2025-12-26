@@ -92,7 +92,6 @@ const MapPage = () => {
                         <Marker
                             key={feature.properties.id}
                             position={[lat, lng]}
-                            icon={createCustomIcon(color)}
                         >
                             <Popup>
                                 <div className="p-1">

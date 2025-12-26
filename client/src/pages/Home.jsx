@@ -11,6 +11,7 @@ import LandingPage from './LandingPage';
 const Home = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    console.log("Rendering Home Component");
     const { t } = useTranslation();
     const { complaintUpdateTrigger } = useComplaint();
     const [refreshKey, setRefreshKey] = useState(0);
