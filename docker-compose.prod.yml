@@ -18,7 +18,6 @@ services:
     command: gunicorn --bind 0.0.0.0:8000 --timeout 120 jan_sevak.wsgi:application
     volumes:
       - ./media:/app/media
-      - ./staticfiles:/app/staticfiles
     env_file:
       - .env
     depends_on:
