@@ -48,6 +48,11 @@ const Navbar = () => {
             : "block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50";
     };
 
+    // Hide Navbar on Landing Page if not logged in
+    if (!user && (location.pathname === '/' || location.pathname === '/feed')) {
+        return null;
+    }
+
     return (
         <nav className="bg-white shadow-sm sticky top-0 z-[100]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
