@@ -106,11 +106,11 @@ const ComplaintForm = ({ onSuccess }) => {
             return;
         }
 
-        // 3. Validation: Location Required
-        if (!location) {
-            showToast("Please tag your location using the 'Get GPS Location' button.", 'error');
-            return;
-        }
+        // 3. Validation: Location Required (REMOVED - Optional now)
+        // if (!location) {
+        //     showToast("Please tag your location using the 'Get GPS Location' button.", 'error');
+        //     return;
+        // }
 
         let finalLocation = location;
 
@@ -123,8 +123,12 @@ const ComplaintForm = ({ onSuccess }) => {
         data.append('description', formData.description);
         data.append('category', formData.category);
         data.append('ward', formData.ward);
-        data.append('latitude', finalLocation.latitude);
-        data.append('longitude', finalLocation.longitude);
+
+        if (finalLocation) {
+            data.append('latitude', finalLocation.latitude);
+            data.append('longitude', finalLocation.longitude);
+        }
+
         data.append('location_address', formData.location_address);
         data.append('is_anonymous', formData.is_anonymous);
 

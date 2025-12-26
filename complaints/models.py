@@ -44,8 +44,8 @@ class Complaint(models.Model):
     image = models.ImageField(upload_to='complaints/', blank=True, null=True)
     
     # Location
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
     location_address = models.CharField(max_length=255, blank=True)
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -56,7 +56,6 @@ class Complaint(models.Model):
     
     # Community
     verification_count = models.PositiveIntegerField(default=0)
-    cc_reporter = models.BooleanField(default=False, help_text="If true, reporter gets CC of the official email")
     
     # Resolution Workflow
     admin_token = models.UUIDField(default=uuid.uuid4, editable=False)
