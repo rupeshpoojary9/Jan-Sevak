@@ -212,9 +212,9 @@ const ComplaintCard = ({ complaint, onDelete }) => {
                 <div className="flex items-center justify-between">
                     <button
                         onClick={handleVerify}
-                        disabled={hasVerified}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${hasVerified
-                            ? 'bg-green-50 text-green-700 border border-green-200 cursor-default'
+                        disabled={hasVerified || (user && (user.pk === complaint.reporter || user.id === complaint.reporter))}
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${hasVerified || (user && (user.pk === complaint.reporter || user.id === complaint.reporter))
+                            ? 'bg-green-50 text-green-700 border border-green-200 cursor-default opacity-70'
                             : 'bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-blue-600'
                             }`}
                     >
@@ -227,7 +227,11 @@ const ComplaintCard = ({ complaint, onDelete }) => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                         )}
-                        <span>{hasVerified ? 'Verified' : 'Verify'}</span>
+                        <span>
+                            {user && (user.pk === complaint.reporter || user.id === complaint.reporter)
+                                ? 'Own Complaint'
+                                : (hasVerified ? 'Verified' : 'Verify')}
+                        </span>
                         <span className={`ml-1 text-xs font-bold px-2 py-0.5 rounded-full ${hasVerified ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-700'}`}>
                             {verifications}
                         </span>

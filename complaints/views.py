@@ -47,7 +47,11 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         if not request.user.is_authenticated:
              return Response({'error': 'Please login to verify.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        # 2. Check if already verified
+        # 2. Check if user is reporter
+        if request.user == complaint.reporter:
+             return Response({'message': 'You cannot verify your own complaint.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 3. Check if already verified
         if Verification.objects.filter(complaint=complaint, user=request.user).exists():
             return Response({'message': 'You have already verified this issue.'}, status=status.HTTP_400_BAD_REQUEST)
         
