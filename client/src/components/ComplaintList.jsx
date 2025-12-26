@@ -37,7 +37,13 @@ const ComplaintList = ({ endpoint }) => {
                 url += `&category=${categoryFilter}`;
             }
             if (urgencyFilter) {
-                url += `&urgency_score=${urgencyFilter}`;
+                // Parse range "min-max" or single value "10"
+                if (urgencyFilter.includes('-')) {
+                    const [min, max] = urgencyFilter.split('-');
+                    url += `&urgency_min=${min}&urgency_max=${max}`;
+                } else {
+                    url += `&urgency_min=${urgencyFilter}&urgency_max=${urgencyFilter}`;
+                }
             }
 
             console.log("DEBUG: Fetching complaints from", url);
@@ -126,16 +132,10 @@ const ComplaintList = ({ endpoint }) => {
                         className="input-field w-full md:w-40"
                     >
                         <option value="">All Urgency</option>
-                        <option value="10">10 (Critical)</option>
-                        <option value="9">9 (Severe)</option>
-                        <option value="8">8 (High)</option>
-                        <option value="7">7</option>
-                        <option value="6">6</option>
-                        <option value="5">5 (Moderate)</option>
-                        <option value="4">4</option>
-                        <option value="3">3</option>
-                        <option value="2">2</option>
-                        <option value="1">1 (Low)</option>
+                        <option value="10">Critical (10)</option>
+                        <option value="8-10">High (8-10)</option>
+                        <option value="4-7">Medium (4-7)</option>
+                        <option value="1-3">Low (1-3)</option>
                     </select>
                 </div>
             </div>

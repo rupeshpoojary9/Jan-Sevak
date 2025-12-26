@@ -31,10 +31,11 @@ class ComplaintViewSet(viewsets.ModelViewSet):
     # Add Search and Filter Capability
     from rest_framework import filters
     from django_filters.rest_framework import DjangoFilterBackend
+    from .filters import ComplaintFilter
     
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     search_fields = ['title', 'description', 'ward__name', 'ward__full_name']
-    filterset_fields = ['category', 'urgency_score', 'status']
+    filterset_class = ComplaintFilter
 
     # Custom Action: Verify (Upvote) a Complaint
     # URL will be: POST /api/complaints/{id}/verify/
