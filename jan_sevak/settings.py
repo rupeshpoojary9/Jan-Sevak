@@ -116,6 +116,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False  # Don't ask for password confirmation
 ACCOUNT_LOGOUT_ON_GET = True # Skip logout confirmation page
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False # Don't redirect if already logged in
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
