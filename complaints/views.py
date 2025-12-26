@@ -164,9 +164,19 @@ class ComplaintViewSet(viewsets.ModelViewSet):
             complaint.delete()
             raise ValidationError({"error": f"Complaint rejected by AI: {reason}"})
         
+        # NEW: Enforce Category Match
+        if not verified:
+             # Delete the invalid complaint and file
+            if complaint.image:
+                image_path = complaint.image.path
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+            
+            complaint.delete()
+            raise ValidationError({"error": "Complaint rejected: The image/description does not match the selected category."})
+
         # If valid, update scores
         complaint.urgency_score = score
-        complaint.ai_verified_category = verified
         complaint.ai_verified_category = verified
         complaint.save()
 
