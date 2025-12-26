@@ -43,10 +43,10 @@ const MapPage = () => {
 
     if (loading) return <div className="text-center py-20">Loading Map...</div>;
 
-    // Mumbai Bounds
+    // Mumbai Bounds (Expanded for Mira Road/Thane)
     const mumbaiBounds = [
-        [18.89, 72.75], // Southwest coordinates
-        [19.30, 73.00]  // Northeast coordinates
+        [18.89, 72.70], // Southwest coordinates
+        [19.50, 73.10]  // Northeast coordinates
     ];
 
     // Helper to create colored pin icon
@@ -69,11 +69,11 @@ const MapPage = () => {
         <div className="h-[calc(100vh-64px)] w-full">
             <MapContainer
                 center={position}
-                zoom={12}
+                zoom={11}
                 scrollWheelZoom={true}
                 style={{ height: '100%', width: '100%' }}
                 maxBounds={mumbaiBounds}
-                minZoom={11}
+                minZoom={10}
             >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

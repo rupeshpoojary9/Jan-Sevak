@@ -40,7 +40,9 @@ const ComplaintList = ({ endpoint }) => {
                 url += `&urgency_score=${urgencyFilter}`;
             }
 
+            console.log("DEBUG: Fetching complaints from", url);
             const res = await axios.get(url);
+            console.log("DEBUG: Complaints fetched:", res.data.results.length);
             setComplaints(res.data.results);
 
             // Calculate total pages (assuming default page size of 10 if not provided)

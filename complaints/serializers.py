@@ -91,8 +91,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
             'ward', 'ward_name', 
             'image', 'images', 'uploaded_images', # Added images fields
             'urgency_score', 'verification_count', 'is_verified', 
-            'reporter', 'reporter_username', 'is_anonymous', 'created_at',
-            'cc_reporter'
+            'reporter', 'reporter_username', 'is_anonymous', 'created_at'
         ]
         # Security: Users shouldn't be able to manually change these via API
         read_only_fields = ['urgency_score', 'status', 'created_at']
@@ -108,20 +107,11 @@ class ComplaintSerializer(serializers.ModelSerializer):
             # Mumbai Bounds (Approximate)
             # South: 18.89, North: 19.30
             # West: 72.75, East: 73.00
-            if not (18.89 <= float(lat) <= 19.30 and 72.75 <= float(lng) <= 73.00):
+            if not (18.89 <= float(lat) <= 19.50 and 72.70 <= float(lng) <= 73.10):
                 raise serializers.ValidationError({
                     "location": "Jan Sevak is currently available only in Mumbai. Please select a location within the city."
                 })
         
-        # Mandatory Image Validation
-        images = data.get('images', [])
-        legacy_image = data.get('image')
-        
-        if not images and not legacy_image:
-             raise serializers.ValidationError({
-                "images": "At least one photo is required to report an issue."
-            })
-
         return data
 
     def create(self, validated_data):
