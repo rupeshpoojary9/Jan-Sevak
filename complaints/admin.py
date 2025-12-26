@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Complaint, Category, Ward, Verification, UserProfile
+from .models import Complaint, Ward, Verification, UserProfile
 
 @admin.register(Complaint)
 class ComplaintAdmin(admin.ModelAdmin):
@@ -14,10 +14,6 @@ class ComplaintAdmin(admin.ModelAdmin):
         self.message_user(request, f"{updated} complaints marked as RESOLVED.")
     mark_as_resolved.short_description = "Mark selected complaints as Resolved"
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description')
-
 @admin.register(Ward)
 class WardAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'full_name', 'officer_email')
@@ -25,7 +21,7 @@ class WardAdmin(admin.ModelAdmin):
 
 @admin.register(Verification)
 class VerificationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'complaint', 'user', 'verified_at')
+    list_display = ('id', 'complaint', 'user', 'timestamp')
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
