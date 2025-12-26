@@ -101,9 +101,7 @@ const ComplaintCard = ({ complaint, onDelete }) => {
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    import { getMediaUrl } from '../utils/media';
 
-    // ... (inside component)
 
     // Combine legacy image and new multiple images
     const images = complaint.uploaded_images && complaint.uploaded_images.length > 0
