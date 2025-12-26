@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 import { useAuth } from '../context/AuthContext';
+import { getMediaUrl } from '../utils/media';
 
 // 1. PROPS: We receive 'complaint' data and an 'onVerify' function from the parent.
 // This makes the component reusable for ANY complaint.
