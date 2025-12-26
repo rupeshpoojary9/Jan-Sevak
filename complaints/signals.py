@@ -182,9 +182,15 @@ def notify_citizen_resolution(sender, instance, created, **kwargs):
         """
         
         try:
-            # FOR TESTING: Send to dummy email
-            recipient_list = ["poojary.rupesh12@gmail.com"]
-            # In production: recipient_list = [instance.reporter.email]
+            # Determine Recipient
+            recipient_email = instance.reporter.email
+            
+            # CHECK FOR TEST MODE / OVERRIDE
+            if settings.EMAIL_OVERRIDE_ADDRESS:
+                recipient_email = settings.EMAIL_OVERRIDE_ADDRESS
+                print(f"Redirecting Resolution Email to override address: {recipient_email}")
+            
+            recipient_list = [recipient_email]
             
             send_mail(
                 subject,
@@ -193,6 +199,6 @@ def notify_citizen_resolution(sender, instance, created, **kwargs):
                 recipient_list,
                 fail_silently=False,
             )
-            print(f"Resolution Email sent to {recipient_list[0]}")
+            print(f"Resolution Email sent to {recipient_list}")
         except Exception as e:
             print(f"Failed to send resolution email: {e}")
