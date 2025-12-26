@@ -27,13 +27,13 @@ class Migration(migrations.Migration):
             name='urgency_score',
             field=models.IntegerField(default=0, help_text='AI calculated score 1-10', validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(10)]),
         ),
-        migrations.CreateModel(
-            name='ComplaintImage',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='complaints/')),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True)),
-                ('complaint', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='complaints.complaint')),
-            ],
-        ),
+        # migrations.CreateModel(
+        #     name='ComplaintImage',
+        #     fields=[
+        #         ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('image', models.ImageField(upload_to='complaints/')),
+        #         ('uploaded_at', models.DateTimeField(auto_now_add=True)),
+        #         ('complaint', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='complaints.complaint')),
+        #     ],
+        # ),
     ]
